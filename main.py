@@ -1,16 +1,20 @@
 import os
+import sys
 import discord
 from discord.ext import commands
 from discord import app_commands
-from dotenv import load_dotenv
 import wavelink
 
-load_dotenv()
+# ── Config from environment variables ────────────────────────────────────────
+# On GitHub Actions/hosting: set these as Repository Secrets or env vars.
+# Locally: export them in your shell or use a .env loader of your choice.
+TOKEN = os.environ.get("DISCORD_TOKEN")
+if not TOKEN:
+    sys.exit("[ERROR] DISCORD_TOKEN environment variable is not set.")
 
-TOKEN         = os.getenv("DISCORD_TOKEN")
-LAVALINK_HOST = os.getenv("LAVALINK_HOST", "127.0.0.1")
-LAVALINK_PORT = int(os.getenv("LAVALINK_PORT", 2333))
-LAVALINK_PASS = os.getenv("LAVALINK_PASSWORD", "youshallnotpass")
+LAVALINK_HOST = os.environ.get("LAVALINK_HOST", "127.0.0.1")
+LAVALINK_PORT = int(os.environ.get("LAVALINK_PORT", 2333))
+LAVALINK_PASS = os.environ.get("LAVALINK_PASSWORD", "youshallnotpass")
 
 # ─────────────────────────────────────────────────────────────────────────────
 intents = discord.Intents.default()
