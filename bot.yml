@@ -1,0 +1,47 @@
+name: Music Bot
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:       # lets you start it manually from GitHub UI
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17 (for Lavalink)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Download Lavalink
+        run: |
+          curl -L https://github.com/lavalink-devs/Lavalink/releases/latest/download/Lavalink.jar \
+               -o Lavalink.jar
+
+      - name: Start Lavalink in background
+        run: |
+          java -jar Lavalink.jar &
+          echo "Waiting for Lavalink to be ready..."
+          sleep 15
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run bot
+        env:
+          DISCORD_TOKEN:     ${{ secrets.DISCORD_TOKEN }}
+          LAVALINK_HOST:     ${{ secrets.LAVALINK_HOST }}
+          LAVALINK_PORT:     ${{ secrets.LAVALINK_PORT }}
+          LAVALINK_PASSWORD: ${{ secrets.LAVALINK_PASSWORD }}
+        run: python main.py
